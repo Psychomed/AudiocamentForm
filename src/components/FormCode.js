@@ -1,8 +1,7 @@
 import React from 'react';
-import validate from '../validateInfo';
-import useForm from '../useForm';
+import validate from '../utils/validateInfo';
+import useForm from '../utils/useForm';
 import InputMask from 'react-input-mask'
-
 
 const prefixes = [
     'MR0',

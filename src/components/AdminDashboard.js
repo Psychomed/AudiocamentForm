@@ -16,39 +16,34 @@ const AdminDashboard = () => {
                 <div class="h3 mt-3">Audiocament Admin</div>
 
                 <div class="col">
-                    <div class="row p-2">
-                        <div class="container">
+                    <div class="row p-2 justify-content-center">
+                        <div class="col-1">
+                            <Dropdown>
+                                <Dropdown.Toggle variant="outline-primary" id="dropdown-basic">
+                                    Préfix
+                                </Dropdown.Toggle>
 
-                            <div class="row">
-                                <div class="col-1">
-                                    <Dropdown>
-                                        <Dropdown.Toggle variant="outline-primary" id="dropdown-basic">
-                                            Préfix
-                                    </Dropdown.Toggle>
+                                <Dropdown.Menu>
+                                    <Dropdown.Item href="#/action-1">MR0</Dropdown.Item>
+                                    <Dropdown.Item href="#/action-2">MR12</Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        </div>
 
-                                        <Dropdown.Menu>
-                                            <Dropdown.Item href="#/action-1">MR0</Dropdown.Item>
-                                            <Dropdown.Item href="#/action-2">MR12</Dropdown.Item>
-                                        </Dropdown.Menu>
-                                    </Dropdown>
-                                </div>
-
-                                <div class="col-3">
-                                    <input class="form-control" type="text" placeholder="Code" id="input_code" />
-                                </div>
-                                <div class="col-2">
-                                    <input class="form-control" type="email" placeholder="Prénom" id="input_firstname" />
-                                </div>
-                                <div class="col-2">
-                                    <input class="form-control" type="text" placeholder="Nom" id="input_nom" />
-                                </div>
-                                <div class="col-2">
-                                    <input class="form-control" type="email" placeholder="Email" id="input_email" />
-                                </div>
-                                <div class="col-2">
-                                    <Button variant="outline-primary">Rechercher</Button>
-                                </div>
-                            </div>
+                        <div class="col-3">
+                            <input class="form-control" type="text" placeholder="Code" id="input_code" />
+                        </div>
+                        <div class="col-2">
+                            <input class="form-control" type="email" placeholder="Prénom" id="input_firstname" />
+                        </div>
+                        <div class="col-2">
+                            <input class="form-control" type="text" placeholder="Nom" id="input_nom" />
+                        </div>
+                        <div class="col-2">
+                            <input class="form-control" type="email" placeholder="Email" id="input_email" />
+                        </div>
+                        <div class="col-2">
+                            <Button variant="outline-primary">Rechercher</Button>
                         </div>
                     </div>
 

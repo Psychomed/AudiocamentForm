@@ -1,12 +1,15 @@
 import React from 'react'
 import "bootstrap/dist/css/bootstrap.min.css";
-import FormCode from './components/FormCode';
+import StartingPage from './components/StartingPage';
+import AdminLogin from './components/AdminLogin';
+import AdminDashboard from './components/AdminDashboard'
+import DownloadPage from './components/DownloadPage';
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <FormCode />
+        <AdminDashboard />
       </header>
     </div>
   );

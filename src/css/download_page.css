@@ -1,0 +1,9 @@
+.button_download::before {
+    border: none;
+    background: url("../img/download.svg") no-repeat #307c5e;
+    color: white;
+    height: 35px;
+    width: 200px;
+    border-radius: 6px;
+    display: inline-block;
+}

@@ -16,10 +16,10 @@ export default function validateInfo(values) {
   }
   
   let lengthCode = values.code.replace(/\s+/g, "").replace(/-/g, '').length
-
+  console.log(lengthCode)
   if (lengthCode === 0) {
     errors.code = 'Le code est requis';
-  } else if (lengthCode < 19) {
+  } else if (lengthCode < 15) {
     errors.code = 'Votre code n\'est pas complet'
   }
 
