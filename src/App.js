@@ -1,12 +1,12 @@
 import React from 'react'
-import AdminDashboard from "./components/AdminDashboard";
 import "bootstrap/dist/css/bootstrap.min.css";
+import FormCode from './components/FormCode';
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <AdminDashboard />
+        <FormCode />
       </header>
     </div>
   );
