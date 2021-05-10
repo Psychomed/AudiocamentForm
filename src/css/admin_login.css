@@ -1,0 +1,30 @@
+.grid_login {
+    background-color: #307c5e;
+    border-radius: 13px;
+    margin-top: 20px;
+}
+
+.button_connection {
+    background-color: #58b18d;
+    border: none;
+}
+
+.button_connection:hover {
+    background-color: #43b889;
+}
+
+.title_login {
+    color:white;
+    font-weight: bold;
+}
+
+.title_admin {
+    color: white;
+    font-size: 30px;
+    margin-bottom: -10px;
+    margin-top: 10px;
+}
+
+.copyright {
+    font-size: 14px;
+}

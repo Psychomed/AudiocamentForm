@@ -1,0 +1,13 @@
+th {
+    vertical-align: middle;
+}
+
+td {
+    vertical-align: middle;
+}
+
+.text_adaptive {
+    font-size: 12px;
+    text-align: center;
+    width: 2px;
+}
