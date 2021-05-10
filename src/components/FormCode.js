@@ -41,11 +41,10 @@ const FormCode = ({ submitForm }) => {
     );
 
     return (
-        <form onSubmit={handleSubmit} className='form' noValidate>
-            <div className='form-inputs'>
-                <label className='form-label'>Votre prénom :</label>
+        <form onSubmit={handleSubmit} noValidate>
+            <div>
+                <label>Votre prénom :</label>
                 <input
-                    className='form-input'
                     type='text'
                     name='firstname'
                     placeholder='Prénom'
@@ -54,10 +53,9 @@ const FormCode = ({ submitForm }) => {
                 />
                 {errors.firstname && <p>{errors.firstname}</p>}
             </div>
-            <div className='form-inputs'>
-                <label className='form-label'>Votre nom :</label>
+            <div>
+                <label>Votre nom :</label>
                 <input
-                    className='form-input'
                     type='text'
                     name='name'
                     placeholder='Nom'
@@ -66,10 +64,9 @@ const FormCode = ({ submitForm }) => {
                 />
                 {errors.name && <p>{errors.name}</p>}
             </div>
-            <div className='form-inputs'>
-                <label className='form-label'>Votre email :</label>
+            <div>
+                <label>Votre email :</label>
                 <input
-                    className='form-input'
                     type='email'
                     name='email'
                     placeholder='Email'
@@ -78,9 +75,9 @@ const FormCode = ({ submitForm }) => {
                 />
                 {errors.email && <p>{errors.email}</p>}
             </div>
-            <div className='form-inputs'>
-                <label className='form-label'>Sélectionnez votre revendeur :</label>
-                <select className="form-select" name="resellers" id="resellers" placeholder='Revendeur' onChange={handleChange} required>
+            <div>
+                <label>Sélectionnez votre revendeur :</label>
+                <select name="resellers" id="resellers" placeholder='Revendeur' onChange={handleChange} required>
                     <option value="" defaultValue hidden>Revendeur</option>
                     <option value="zenlatitude">Zenlatitudes</option>
                     <option value="psiostore">Psiostore</option>
@@ -90,19 +87,19 @@ const FormCode = ({ submitForm }) => {
                 </select>
                 {errors.reseller && <p>{errors.reseller}</p>}
             </div>
-            <div className='form-inputs'>
-                <label className='form-label'>Préfix</label>
-                <select className="form-select" name="prefix" id="prefix" placeholder='Préfix' onChange={handleChange}>
+            <div>
+                <label>Préfix</label>
+                <select name="prefix" id="prefix" placeholder='Préfix' onChange={handleChange}>
                     <option value="MR0">MR0</option>
                     <option value="MR12">MR12</option>
                 </select>
             </div>
-            <div className='form-inputs'>
-                <label className='form-label'>Votre code :</label>
-                <InputMask className='form-input' mask="***** - ***** - *****" maskChar=" " name='code' onChange={handleChange} />
+            <div>
+                <label>Votre code :</label>
+                <InputMask mask="***** - ***** - *****" maskChar=" " name='code' onChange={handleChange} />
                 {errors.code && <p>{errors.code}</p>}
             </div>
-            <button className='form-input-btn' type='submit'>
+            <button type='submit'>
                 Valider
         </button>
         </form>
