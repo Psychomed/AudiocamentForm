@@ -1,5 +1,8 @@
 name: Deploy web to prod
 on:
+  push:
+    branches:
+      - main
   pull_request:
     branches:
       - main
