@@ -2,7 +2,7 @@ name: Deploy web to prod
 on:
   pull_request:
     branches:
-      - master
+      - main
 jobs:
   build:
     runs-on: ubuntu-latest
