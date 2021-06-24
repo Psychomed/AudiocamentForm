@@ -1,0 +1,46 @@
+name: Deploy web to prod
+on:
+  pull_request:
+    branches:
+      - master
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [ 12.18.2 ]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm install -g yarn
+      - run: yarn install
+      - run: CI=false yarn run build
+        env:
+          APP_NAME: Audiocament
+          REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
+          REACT_APP_PUBLIC_URL: ${{ secrets.REACT_APP_PUBLIC_URL }}
+          REACT_APP_SITE_NAME: ${{ secrets.REACT_APP_SITE_NAME }}
+
+        #    - run: npm test
+      - name: Deploy to server
+        id: deploy
+        uses: Pendect/action-rsyncer@v1.1.0
+        env:
+          DEPLOY_KEY: ${{secrets.ACTIONS_DEPLOY_KEY_PROD}}
+        with:
+          flags: '-avzuh --delete'
+          options: ''
+          ssh_options: '-p 22'
+          src: './bin ./build'
+          dest: 'root@psiostore.com:/home/websites/audiocament/public'
+      - name: Executing versioning script
+        uses: appleboy/ssh-action@master
+        with:
+          host: audiocament.psiostore.com
+          username: root
+          key: ${{secrets.ACTIONS_DEPLOY_KEY_PROD}}
+          port: 22
+          script: cd /home/websites/audiocament/public && ./bin/deploy_github_master

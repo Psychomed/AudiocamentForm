@@ -1,12 +1,14 @@
-import { useState, useEffect } from 'react';
+import {useEffect, useState} from 'react';
+import FormCodeService from "../components/services/FormCodeService";
 
-const useForm = (callback, validate) => {
+const useForm = (callback, validate, onResponse) => {
   const [values, setValues] = useState({
     firstname: '',
-    name: '',
-    code: '',
+    lastname: '',
+    code: '41D92-28EAF-B3B53',
     email: '',
-    reseller: ''
+    resellers: '',
+    customResseler: ''
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -33,6 +35,14 @@ const useForm = (callback, validate) => {
 
     setErrors(validate(values));
     setIsSubmitting(true);
+
+    FormCodeService.postCode(values).then(function (data) {
+      console.log(data);
+      onResponse(true, data);
+    }).catch((e) => {
+      onResponse(false, e);
+    })
+
   };
 
   useEffect(

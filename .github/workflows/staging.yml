@@ -1,0 +1,52 @@
+name: Deploy web to staging
+on:
+  pull_request:
+    branches:
+      - staging
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [ 12.18.2 ]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm install -g yarn
+      - run: yarn install
+      - run: CI=false yarn run build
+        env:
+          APP_NAME: Happy Clinic
+          REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
+          REACT_APP_PUBLIC_URL: ${{ secrets.REACT_APP_PUBLIC_URL }}
+          REACT_APP_HAPPY_CLINIC_URL: ${{ secrets.REACT_APP_HAPPY_CLINIC_URL }}
+          REACT_APP_REPEAT_DAYLY_LENGHT: ${{ secrets.REACT_APP_REPEAT_DAYLY_LENGHT }}
+          REACT_APP_REPEAT_WEEKLY_LENGHT: ${{ secrets.REACT_APP_REPEAT_WEEKLY_LENGHT }}
+          REACT_APP_SITE_NAME: "PSiO - Happy Clinic - Réservation"
+          REACT_APP_GOOGLE_API_KEY: ${{ secrets.REACT_APP_GOOGLE_API_KEY }}
+          REACT_APP_STRIPE_PK: ${{ secrets.REACT_APP_STRIPE_PK }}
+          REACT_APP_STRIPE_SK: ${{ secrets.REACT_APP_STRIPE_SK }}
+
+        #    - run: npm test
+      - name: Deploy to server
+        id: deploy
+        uses: Pendect/action-rsyncer@v1.1.0
+        env:
+          DEPLOY_KEY: ${{secrets.ACTIONS_DEPLOY_KEY}}
+        with:
+          flags: '-avzuh --delete'
+          options: ''
+          ssh_options: '-p 22'
+          src: './bin ./build'
+          dest: 'root@staging.happyclinic.be:/home/websites/staging.happyclinic/public'
+      - name: Executing versioning script
+        uses: appleboy/ssh-action@master
+        with:
+          host: staging.happyclinic.be
+          username: root
+          key: ${{secrets.ACTIONS_DEPLOY_KEY}}
+          port: 22
+          script: cd /home/websites/staging.happyclinic/public && ./bin/deploy_github_staging

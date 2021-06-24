@@ -1,18 +1,17 @@
 import React from 'react'
 import "bootstrap/dist/css/bootstrap.min.css";
-import StartingPage from './components/StartingPage';
-import AdminLogin from './components/AdminLogin';
-import AdminDashboard from './components/AdminDashboard'
-import DownloadPage from './components/DownloadPage';
+import Router from "./Router";
+import Footer from "./components/Footer";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <AdminDashboard />
-      </header>
-    </div>
-  );
+    return (
+        <div className="App">
+
+            <Router/>
+            <Footer/>
+
+        </div>
+    );
 }
 
 export default App;
