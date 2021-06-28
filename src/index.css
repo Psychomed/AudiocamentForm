@@ -27,10 +27,15 @@ footer {
 }
 
 .intro-audiocament {
-  background-color: #1e7e34;
+  background-color: #307C5E;
   padding: 3rem;
   color: #ffffff;
   min-height: 100%;
+}
+
+.btn-validate {
+  color: #ffffff;
+  background-color: #307C5E;
 }
 
 .intro-audiocament h1 {
@@ -76,6 +81,15 @@ footer {
 
 .downloadCards {
   padding-top: 3rem;
+}
+
+.logo-container {
+  width: 100%;
+  text-align: center;
+}
+
+.logo-container img {
+  max-width: 70%;
 }
 
 @media screen and (min-width: 576px) {

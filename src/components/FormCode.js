@@ -5,7 +5,7 @@ import InputMask from 'react-input-mask'
 import FormCodeService from "./services/FormCodeService";
 
 
-const FormCode = ({submitForm, onResponse, isCodeValid}) => {
+const FormCode = ({submitForm, onResponse, isCodeValid, isSubmitted}) => {
 
     const [resselers, setResselers] = useState([]);
     const [prefixes, setPrefixes] = useState([]);
@@ -103,23 +103,25 @@ const FormCode = ({submitForm, onResponse, isCodeValid}) => {
                 {errors.customResseler && <p className="form-text text-danger">{errors.customResseler}</p>}
             </div>}
             <div className="form-group">
-                <label className="form-label">Préfix</label>
+                <label className="form-label">Préfix du code :</label>
                 <select className="form-select" name="prefix" id="prefix" placeholder='Préfix' onChange={handleChange}>
-                    <option value="" defaultValue hidden>Prefix</option>
+                    <option value="" defaultValue hidden>Choisissez le préfix situé devant le code</option>
                     {prefixes.map((prefix) => (
                         <option value={prefix} key={prefix}>{prefix}</option>
                     ))}
                 </select>
             </div>
             <div className="form-group">
-                <label className="form-label">Votre code :</label>
+                <label className="form-label">Entrez ci-dessous le code de votre CD contenant 15 caractères. Les lettres
+                    sont toujours en majuscule. </label>
                 <InputMask className="form-control" mask="***** - ***** - *****" maskChar=" " name='code'
                            onChange={handleChange}/>
                 {errors.code && <p className="form-text text-danger">{errors.code}</p>}
-                {!isCodeValid && <p className="form-text text-danger">Le code est invalide</p>}
+                {!isCodeValid && !isSubmitted && <p className="form-text text-danger">Le code est invalide</p>}
             </div>
             <div className="form-group button-container">
-                <button className="btn btn-default btn-success" type='submit'>
+                <button className="btn btn-default btn-validate" style={{backgroundColor: '#307C5E', color: '#ffffff'}}
+                        type='submit'>
                     Valider
                 </button>
             </div>

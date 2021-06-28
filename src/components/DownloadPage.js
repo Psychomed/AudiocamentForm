@@ -8,6 +8,8 @@ const DownloadPage = ({musics, code, accessCode}) => {
         <div>
             <div className="subHeader">
                 <h2>Vos téléchargements pour le code <br/><span className="text-muted">{code}</span></h2>
+                <p style={{fontStyle: "italic"}}>Veuillez télécharger tous les fichiers immédiatement, le téléchargement
+                    est disponible seulement durant une heure.</p>
             </div>
             <div className="downloadCards">
                 {musics.map((music) => (
