@@ -9,6 +9,7 @@
     "@testing-library/user-event": "^12.1.10",
     "axios": "^0.21.1",
     "bootstrap": "^5.0.1",
+    "dayjs": "^1.10.6",
     "js-file-download": "^0.4.12",
     "react": "^17.0.2",
     "react-bootstrap": "^1.5.2",

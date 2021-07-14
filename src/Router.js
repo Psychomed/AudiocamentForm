@@ -2,8 +2,7 @@ import React from "react";
 import {BrowserRouter, Route, Switch} from "react-router-dom";
 import StartingPage from "./components/StartingPage";
 import DownloadPage from "./components/DownloadPage";
-import AdminDashboard from "./components/AdminDashboard";
-import AdminLogin from "./components/AdminLogin";
+import Admin from "./components/Admin";
 
 
 const Router = () => {
@@ -14,8 +13,7 @@ const Router = () => {
             <Switch>
                 <Route path="/" exact component={StartingPage}/>
                 <Route path="/download" exact component={DownloadPage}/>
-                <Route path="/admin" exact component={AdminDashboard}/>
-                <Route path="/adminLogin" exact component={AdminLogin}/>
+                <Route path="/admin" exact component={Admin}/>
             </Switch>
         </BrowserRouter>
     )

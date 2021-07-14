@@ -1,174 +1,222 @@
-import React, { useState } from 'react'
+import React, {useEffect, useState} from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import '../css/admin_dashboard.css'
 import Dropdown from 'react-bootstrap/Dropdown'
-import Button from 'react-bootstrap/Button'
 import Table from 'react-bootstrap/Table'
-import Collapse from 'react-bootstrap/Collapse'
 import "bootstrap/js/src/collapse.js";
+import FormCodeService from "./services/FormCodeService";
+import {DropdownButton} from "react-bootstrap";
+import DropdownItem from "react-bootstrap/DropdownItem";
+import AdminService from "./services/AdminService";
+import AdminAccessCodeRow from "./AdminAcccessCodeRow";
 
-const AdminDashboard = () => {
-    const [open, setOpen] = useState(false);
+const AdminDashboard = ({admin}) => {
+
+    const [resselers, setResselers] = useState([]);
+    const [prefixes, setPrefixes] = useState([]);
+    const [codes, setCodes] = useState([]);
+    const [filteredCodes, setFilteredCodes] = useState([]);
+    const [searchByCode, setSearchByCode] = useState("");
+    const [searchByFirstname, setSearchByFirstname] = useState("");
+    const [searchByLastname, setSearchByLastname] = useState("");
+    const [searchByEmail, setSearchByEmail] = useState("");
+    const [searchByPrefix, setSearchByPrefix] = useState("");
+    const [searchByResseler, setSearchByResseler] = useState("");
+    const [csvHref, setCsvHref] = useState(process.env.REACT_APP_API_URL + "/admin/generateCsv/?");
+
+    useEffect(() => {
+
+        FormCodeService.getResselers().then(function (data) {
+            setResselers(data);
+        })
+        FormCodeService.getPrefixes().then(function (data) {
+            setPrefixes(data);
+        })
+
+        AdminService.getCodes().then(function (data) {
+            setCodes(data)
+        })
+
+    }, []);
+
+    useEffect(() => {
+        let searchedCode = codes;
+        let href = process.env.REACT_APP_API_URL + "/admin/generateCsv/?";
+
+        if (Boolean(searchByCode)) {
+            href += 'code=' + searchByCode + '&';
+            searchedCode = searchedCode.filter(code => code.code.includes(searchByCode));
+        }
+        if (Boolean(searchByFirstname)) {
+            href += 'firstname=' + searchByFirstname + '&';
+            searchedCode = searchedCode.filter(code => {
+                if (Boolean(code.user)) {
+                    return code.user.firstname.includes(searchByFirstname)
+                }
+                return false
+            })
+        }
+        if (Boolean(searchByLastname)) {
+            href += 'lastname=' + searchByLastname + '&';
+            searchedCode = searchedCode.filter(code => {
+                if (Boolean(code.user)) {
+                    return code.user.lastname.includes(searchByLastname)
+                }
+                return false
+            })
+        }
+        if (Boolean(searchByEmail)) {
+            href += 'email=' + searchByEmail + '&';
+            searchedCode = searchedCode.filter(code => {
+                if (Boolean(code.user)) {
+                    return code.user.email.includes(searchByEmail)
+                }
+                return false
+            })
+        }
+        if (Boolean(searchByPrefix)) {
+            href += 'prefix=' + searchByPrefix + '&';
+            searchedCode = searchedCode.filter(code => {
+                return code.code.split("-")[0] === searchByPrefix
+            })
+        }
+        if (Boolean(searchByResseler)) {
+            href += 'resseler=' + searchByResseler + '&';
+            searchedCode = searchedCode.filter(code => code.resseler_id === searchByResseler)
+        }
+        setCsvHref(href);
+        setFilteredCodes(searchedCode.slice(0, 100))
+
+    }, [codes, searchByCode, searchByEmail, searchByFirstname, searchByLastname, searchByResseler, searchByPrefix])
+    
+    const handlePrefixChange = (eventKey, event) => {
+        setSearchByPrefix(eventKey);
+    }
+    const handleResselerChange = (eventKey) => {
+        console.log(eventKey)
+        setSearchByResseler(eventKey);
+    }
+    const handleSearchByCode = (event) => {
+        console.log(event.target.value);
+        setSearchByCode(event.target.value);
+    }
+    const handleSearchByFirstname = (event) => {
+        setSearchByFirstname(event.target.value)
+    }
+    const handleSearchByLastname = (event) => {
+        setSearchByLastname(event.target.value)
+    }
+    const handleSearchByEmail = (event) => {
+        setSearchByEmail(event.target.value)
+    }
+
+    const handleResetMusic = (musicId, accessCodeId) => {
+
+        let codesToChange = codes;
+        codesToChange.every(code => {
+            if (code.id === accessCodeId) {
+                code.musics.forEach(music => {
+                    if (music.id === musicId) {
+                        music.pivot.token = null;
+                        music.pivot.expire_at = null;
+                        music.pivot.lastAttempt = null;
+                        music.pivot.attempts = 0;
+                        return false;
+                    }
+                    return true;
+                })
+            }
+            return true;
+        })
+        setCodes([
+            ...codesToChange
+        ])
+    }
+
+
+    const getResselerFromId = (id) => {
+        if (resselers.length < 1 || !Boolean(id)) return null;
+        return resselers.find(resseler => resseler.id === parseInt(id));
+    }
+
+    if (!Boolean(admin) || admin.auth < 4096) return null // psiostore admin
 
     return (
         <form>
-            <div class="container">
-                <div class="h3 mt-3">Audiocament Admin</div>
+            <div className="container">
+                <div className="h3 mt-3">Audiocament Admin</div>
 
-                <div class="col">
-                    <div class="row p-2 justify-content-center">
-                        <div class="col-1">
-                            <Dropdown>
-                                <Dropdown.Toggle variant="outline-primary" id="dropdown-basic">
-                                    Préfix
-                                </Dropdown.Toggle>
+                <div className="col">
+                    <div className="row p-2 justify-content-between">
+                        <div className="col-1">
+                            <Dropdown onSelect={handlePrefixChange}>
+                                <DropdownButton variant="outline-primary" id="dropdown-basic"
+                                                title={Boolean(searchByPrefix) ? searchByPrefix : 'Prefix'}>
+                                    <DropdownItem eventKey={null}>Tous</DropdownItem>
+                                    {prefixes.map((prefix, index) => (
+                                        <DropdownItem key={prefix} eventKey={prefix}>{prefix}</DropdownItem>
+                                    ))}
 
-                                <Dropdown.Menu>
-                                    <Dropdown.Item href="#/action-1">MR0</Dropdown.Item>
-                                    <Dropdown.Item href="#/action-2">MR12</Dropdown.Item>
-                                </Dropdown.Menu>
+                                </DropdownButton>
                             </Dropdown>
                         </div>
 
-                        <div class="col-3">
-                            <input class="form-control" type="text" placeholder="Code" id="input_code" />
+                        <div className="col-1">
+                            <Dropdown onSelect={handleResselerChange}>
+                                <DropdownButton variant="outline-primary" id="dropdown-basic"
+                                                title={Boolean(searchByResseler) ? (getResselerFromId(searchByResseler)).name : 'Resseler'}>
+
+                                    <Dropdown.Item value={null}>Tous</Dropdown.Item>
+                                    {resselers.map((resseler, index) => (
+                                        <Dropdown.Item key={resseler.id}
+                                                       eventKey={resseler.id}>{resseler.name}</Dropdown.Item>
+                                    ))}
+                                </DropdownButton>
+                            </Dropdown>
                         </div>
-                        <div class="col-2">
-                            <input class="form-control" type="email" placeholder="Prénom" id="input_firstname" />
+
+                        <div className="col-2">
+                            <input className="form-control" type="text" placeholder="Code" id="input_code"
+                                   onChange={handleSearchByCode}/>
                         </div>
-                        <div class="col-2">
-                            <input class="form-control" type="text" placeholder="Nom" id="input_nom" />
+                        <div className="col-2">
+                            <input className="form-control" type="email" placeholder="Prénom" id="input_firstname"
+                                   onChange={handleSearchByFirstname}/>
                         </div>
-                        <div class="col-2">
-                            <input class="form-control" type="email" placeholder="Email" id="input_email" />
+                        <div className="col-2">
+                            <input className="form-control" type="text" placeholder="Nom" id="input_nom"
+                                   onChange={handleSearchByLastname}/>
                         </div>
-                        <div class="col-2">
-                            <Button variant="outline-primary">Rechercher</Button>
+                        <div className="col-2">
+                            <input className="form-control" type="email" placeholder="Email" id="input_email"
+                                   onChange={handleSearchByEmail}/>
+                        </div>
+                        <div className="col-1">
+                            <a className="btn btn-outline-primary" href={csvHref} target="_blank">Export CSV</a>
                         </div>
                     </div>
 
-                    <div class="row">
-                        <div class="col-12">
+                    <div className="row">
+                        <div className="col-12">
                             <Table striped bordered responsive>
                                 <thead>
-                                    <tr>
-                                        <th>Code</th>
-                                        <th>Nom</th>
-                                        <th>Prénom</th>
-                                        <th>Email</th>
-                                        <th>Date d'utilisation</th>
-                                        <th>Revendeur</th>
-                                        <th>Actions</th>
-                                    </tr>
+                                <tr>
+                                    <th>Code</th>
+                                    <th>Nom</th>
+                                    <th>Prénom</th>
+                                    <th>Email</th>
+                                    <th>Date d'utilisation</th>
+                                    <th>Revendeur</th>
+                                </tr>
                                 </thead>
                                 <tbody>
-                                    <tr
-                                        onClick={() => setOpen(!open)}
-                                        aria-controls="example-collapse-text"
-                                        aria-expanded={open}
-                                    >
-                                        <td>DIOJEIOZJIODJZOEDJOZED</td>
-                                        <td>De larue</td>
-                                        <td>Grégoire</td>
-                                        <td>haaa@gmail.com</td>
-                                        <td>12/03/21</td>
-                                        <td>EchoSanté</td>
-                                        <td>Actions</td>
-                                    </tr>
-                                    <tr>
-                                        <Collapse in={open}>
-                                            <td colspan="7">
-                                                <div class="container">
-                                                    <div class="row">
-                                                        <div class="col-3">
-                                                            <Table striped bordered hover responsive>
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th>Nom</th>
-                                                                        <td>
-                                                                            <div class="form-group">
-                                                                                <input type="text" class="form-control" id="exampleInputEmail1" value="de Meeûs" />
-                                                                            </div>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th>Prénom</th>
-                                                                        <td>
-                                                                            <div class="form-group">
-                                                                                <input type="text" class="form-control" id="exampleInputEmail1" value="Augustin" />
-                                                                            </div>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th>Email</th>
-                                                                        <td>
-                                                                            <div class="form-group">
-                                                                                <input type="email" class="form-control" id="exampleInputEmail1" value="augustin@psio.com" />
-                                                                            </div>
-                                                                        </td>
-                                                                    </tr>
-                                                                </thead>
-                                                            </Table>
-                                                            <Button variant="outline-primary">Mettre à jour</Button>
-                                                        </div>
-                                                        <div class="col-4">
-                                                            <Table striped bordered hover responsive>
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th>Code</th>
-                                                                        <td>ZCOIHCJZIOUCHZOEIUCHZC</td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th>Date création</th>
-                                                                        <td>12/03/2021</td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th>Date utilisation</th>
-                                                                        <td>12/02/1992</td>
-                                                                    </tr>
-                                                                </thead>
-                                                            </Table>
-                                                            <Button variant="outline-primary">Réinitialiser Code</Button>
-                                                        </div>
-                                                        <div class="col-5">
-                                                            <Table striped bordered hover responsive>
-                                                                <thead>
-                                                                    <tr>
-                                                                        <td>Titre</td>
-                                                                        <td>Téléchargé</td>
-                                                                        <td>Date</td>
-                                                                        <td>Erreur(s)</td>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    <tr>
-                                                                        <td class="text_adaptive" size="sm">S'endormir ijezbdiz</td>
-                                                                        <td>Yes</td>
-                                                                        <td>12/04/2021</td>
-                                                                        <td>3</td>
-                                                                        <td><Button variant="outline-primary" class="btn btn-outline-primary p-2 btn button_reset_music">Réinitialiser</Button></td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td class="text_adaptive">S'endormir</td>
-                                                                        <td>Yes</td>
-                                                                        <td>12/04/2021</td>
-                                                                        <td>3</td>
-                                                                        <td><Button variant="outline-primary" class="btn btn-outline-primary p-2 btn button_reset_music">Réinitialiser</Button></td>
-                                                                    </tr>
-                                                                </tbody>
-                                                            </Table>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </Collapse>
-                                    </tr>
+                                {filteredCodes.map(code => (
+                                    <AdminAccessCodeRow code={code} resselers={resselers}
+                                                        handleResetMusic={handleResetMusic}/>
+                                ))}
+
                                 </tbody>
                             </Table>
-                        </div>
-
-                        <div>
-                            <button type="button" class="btn btn-outline-primary">Export CSV</button>
                         </div>
                     </div>
                 </div>
