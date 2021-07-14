@@ -82,7 +82,7 @@ const AdminDashboard = ({admin}) => {
         }
         if (Boolean(searchByResseler)) {
             href += 'resseler=' + searchByResseler + '&';
-            searchedCode = searchedCode.filter(code => code.resseler_id === searchByResseler)
+            searchedCode = searchedCode.filter(code => code.resseler_id === parseInt(searchByResseler))
         }
         setCsvHref(href);
         setFilteredCodes(searchedCode.slice(0, 100))

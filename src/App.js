@@ -5,12 +5,15 @@ import Footer from "./components/Footer";
 
 function App() {
     return (
-        <div className="App">
+        <>
+            <div className="App">
 
-            <Router/>
+                <Router/>
+
+
+            </div>
             <Footer/>
-
-        </div>
+        </>
     );
 }
 

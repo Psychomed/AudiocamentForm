@@ -36,7 +36,7 @@ function resetCode(accessCodeId) {
     return new Promise((resolve, reject) => {
         axios.post('/admin/resetCode', {accessCodeId})
             .then((result) => {
-                console.log(result)
+                alert('Done !');
             })
     })
 
