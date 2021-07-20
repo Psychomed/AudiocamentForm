@@ -7,7 +7,8 @@ import AdminService from "./services/AdminService";
 
 const getResselerFromId = (id, resselers) => {
     if (Boolean(id)) {
-        return resselers.find(resseler => resseler.id === id);
+        let res = resselers.find(resseler => resseler.id === id);
+        return Boolean(res) ? res : {name: null}
     } else {
         return {name: null}
     }
@@ -15,7 +16,7 @@ const getResselerFromId = (id, resselers) => {
 }
 
 
-const AdminAccessCodeRow = ({code, resselers}) => {
+const AdminAccessCodeRow = ({numLine, code, resselers}) => {
 
     const [open, setOpen] = useState(false);
     const [user, setUser] = useState({});
@@ -25,12 +26,14 @@ const AdminAccessCodeRow = ({code, resselers}) => {
 
         if (Boolean(code.user)) {
             setUser({
+                id: code.user.id,
                 firstname: code.user.firstname,
                 lastname: code.user.lastname,
                 email: code.user.email,
             })
         } else {
             setUser({
+                id: null,
                 firstname: null,
                 lastname: null,
                 email: null,
@@ -48,7 +51,20 @@ const AdminAccessCodeRow = ({code, resselers}) => {
         AdminService.resetCode(accessCodeId);
     }
 
-    if (!Boolean(code)) return null
+    const handleChangeUser = (event) => {
+        setUser({
+            ...user,
+            [event.target.name]: event.target.value,
+        })
+    }
+
+    const handleModifyUser = () => {
+        AdminService.editUser(user).then((result) => {
+            alert("Utilisateur mis à jour")
+        });
+    }
+
+    if (!Boolean(code) || !Boolean(resselers)) return null
 
     return (
         <>
@@ -58,11 +74,12 @@ const AdminAccessCodeRow = ({code, resselers}) => {
                 aria-controls="example-collapse-text"
                 aria-expanded={open}
             >
+                <td>{numLine}</td>
                 <td>{code.code}</td>
                 <td>{user.firstname}</td>
                 <td>{user.lastname}</td>
                 <td>{user.email}</td>
-                <td>{code.lastAttempt}</td>
+                <td>{code.lastAccessDate}</td>
                 <td>{getResselerFromId(code.resseler_id, resselers).name}</td>
             </tr>
             <tr>
@@ -78,6 +95,7 @@ const AdminAccessCodeRow = ({code, resselers}) => {
                                             <td>
                                                 <div className="form-group">
                                                     <input type="text" className="form-control" name="lastname"
+                                                           onChange={handleChangeUser}
                                                            value={user.lastname}/>
                                                 </div>
                                             </td>
@@ -87,6 +105,7 @@ const AdminAccessCodeRow = ({code, resselers}) => {
                                             <td>
                                                 <div className="form-group">
                                                     <input type="text" className="form-control" name="firstname"
+                                                           onChange={handleChangeUser}
                                                            value={user.firstname}/>
                                                 </div>
                                             </td>
@@ -96,13 +115,16 @@ const AdminAccessCodeRow = ({code, resselers}) => {
                                             <td>
                                                 <div className="form-group">
                                                     <input type="email" className="form-control" name="email"
+                                                           onChange={handleChangeUser}
                                                            value={user.email}/>
                                                 </div>
                                             </td>
                                         </tr>
                                         </thead>
                                     </Table>
-                                    {Boolean(code.user) && (<Button variant="outline-primary">Mettre à jour</Button>)}
+                                    {Boolean(code.user) && (
+                                        <Button variant="outline-primary" onClick={handleModifyUser}>Mettre à
+                                            jour</Button>)}
 
                                 </div>
                                 <div className="col-4">
@@ -129,7 +151,6 @@ const AdminAccessCodeRow = ({code, resselers}) => {
                                             <td>Titre</td>
                                             <td>Téléchargé</td>
                                             <td>Date</td>
-                                            <td>Erreur(s)</td>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -137,8 +158,7 @@ const AdminAccessCodeRow = ({code, resselers}) => {
                                             <tr key={music.id}>
                                                 <td className="text_adaptive" size="sm">{music.name}</td>
                                                 <td>{Boolean(music.pivot.token) ? 'Oui' : 'Non'}</td>
-                                                <td>{music.lastAttempt}</td>
-                                                <td>{music.attempts}</td>
+                                                <td>{music.pivot.lastAttempt}</td>
                                                 <td><Button variant="outline-primary"
                                                             className="btn btn-outline-primary p-2 btn button_reset_music"
                                                             onClick={() => {

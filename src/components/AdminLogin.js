@@ -2,6 +2,7 @@ import React, {useState} from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import '../css/admin_login.css'
 import AdminService from "./services/AdminService";
+import axios from "axios";
 
 export const AdminLogin = ({setAdmin}) => {
 
@@ -24,6 +25,9 @@ export const AdminLogin = ({setAdmin}) => {
         if (Boolean(data.username) && Boolean(data.password)) {
             AdminService.signInCredentials(data.username, data.password).then((data) => {
                 setAdmin(data.user);
+                axios.setJwt(data.token);
+                localStorage.setItem('t', data.token);
+
             }).catch((e) => {
                 alert(e.message);
             });

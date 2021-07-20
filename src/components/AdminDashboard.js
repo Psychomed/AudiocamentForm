@@ -80,9 +80,14 @@ const AdminDashboard = ({admin}) => {
                 return code.code.split("-")[0] === searchByPrefix
             })
         }
-        if (Boolean(searchByResseler)) {
-            href += 'resseler=' + searchByResseler + '&';
-            searchedCode = searchedCode.filter(code => code.resseler_id === parseInt(searchByResseler))
+        if (Boolean(searchByResseler) && searchByResseler !== "all") {
+            if (searchByResseler === "some") {
+                searchedCode = searchedCode.filter(code => code.resseler_id !== 0)
+            } else {
+                href += 'resseler=' + searchByResseler + '&';
+                searchedCode = searchedCode.filter(code => code.resseler_id === parseInt(searchByResseler))
+            }
+
         }
         setCsvHref(href);
         setFilteredCodes(searchedCode.slice(0, 100))
@@ -164,9 +169,13 @@ const AdminDashboard = ({admin}) => {
                         <div className="col-1">
                             <Dropdown onSelect={handleResselerChange}>
                                 <DropdownButton variant="outline-primary" id="dropdown-basic"
-                                                title={Boolean(searchByResseler) ? (getResselerFromId(searchByResseler)).name : 'Resseler'}>
+                                                title={Boolean(searchByResseler) && Number.isInteger(searchByResseler) ? (getResselerFromId(searchByResseler)).name :
+                                                    searchByResseler === 'all' ? 'Sans importance' :
+                                                        searchByResseler === 'some' ? 'Tous' : "Resseler"}>
 
-                                    <Dropdown.Item value={null}>Tous</Dropdown.Item>
+                                    <Dropdown.Item eventKey="some">Tous</Dropdown.Item>
+                                    <Dropdown.Item
+                                        eventKey="all">Sans Importance</Dropdown.Item>
                                     {resselers.map((resseler, index) => (
                                         <Dropdown.Item key={resseler.id}
                                                        eventKey={resseler.id}>{resseler.name}</Dropdown.Item>
@@ -201,6 +210,7 @@ const AdminDashboard = ({admin}) => {
                             <Table striped bordered responsive>
                                 <thead>
                                 <tr>
+                                    <th>#</th>
                                     <th>Code</th>
                                     <th>Nom</th>
                                     <th>Prénom</th>
@@ -210,11 +220,11 @@ const AdminDashboard = ({admin}) => {
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {filteredCodes.map(code => (
-                                    <AdminAccessCodeRow code={code} resselers={resselers}
+                                {filteredCodes.map((code, key) => (
+                                    <AdminAccessCodeRow key={code.code} numLine={key + 1} code={code}
+                                                        resselers={resselers}
                                                         handleResetMusic={handleResetMusic}/>
                                 ))}
-
                                 </tbody>
                             </Table>
                         </div>

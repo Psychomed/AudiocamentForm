@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import AdminLogin from "./AdminLogin";
 import AdminDashboard from "./AdminDashboard";
+import axios from "axios";
 
 
 const Admin = () => {
@@ -10,8 +11,9 @@ const Admin = () => {
 
     useEffect(() => {
 
-        if (Boolean(localStorage.getItem('userAdmin'))) {
-            setAdmin(localStorage.getItem('userAdmin'));
+        if (Boolean(localStorage.getItem('userAdmin') && Boolean(localStorage.getItem('token')))) {
+            setAdmin(JSON.parse(localStorage.getItem('userAdmin')));
+            axios.setJwt(localStorage.getItem('token'));
         }
 
     }, [])

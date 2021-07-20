@@ -8,7 +8,8 @@ function signInCredentials(email, password) {
         axios.post('/signIn', {email, password})
             .then(({user, token, refreshToken}) => {
                 axios.setJwt(token);
-                localStorage.setItem('userAdmin', user);
+                localStorage.setItem('userAdmin', JSON.stringify(user));
+                localStorage.setItem('token', token);
                 resolve({user, token, refreshToken});
             })
             .catch((e) => {
@@ -42,9 +43,14 @@ function resetCode(accessCodeId) {
 
 }
 
+const editUser = (editUser) => {
+    return axios.post('admin/editUser', {...editUser})
+}
+
 export default {
     signInCredentials,
     getCodes,
     resetMusic,
     resetCode,
+    editUser
 }
