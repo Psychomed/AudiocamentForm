@@ -171,7 +171,7 @@ const AdminDashboard = ({admin}) => {
                                 <DropdownButton variant="outline-primary" id="dropdown-basic"
                                                 title={Boolean(searchByResseler) && Number.isInteger(searchByResseler) ? (getResselerFromId(searchByResseler)).name :
                                                     searchByResseler === 'all' ? 'Sans importance' :
-                                                        searchByResseler === 'some' ? 'Tous' : "Resseler"}>
+                                                        searchByResseler === 'some' ? 'Tous' : "Reseller"}>
 
                                     <Dropdown.Item eventKey="some">Tous</Dropdown.Item>
                                     <Dropdown.Item
